@@ -14,14 +14,10 @@ namespace Services
         }
         public User AddUser(User user)
         {
-            if (password.CheckPassword(user.Password).Level < 2)
-                return null;
             return repository.AddUser(user);
         }
         public User Login(User user)
         {
-            if (password.CheckPassword(user.Password).Level < 2)
-                return null;
             return repository.Login(user);
         }
         public void UpdateUser(int id, User user)
