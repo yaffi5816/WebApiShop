@@ -11,12 +11,17 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class PasswordController : ControllerBase
     {
-        PasswordService password = new PasswordService();
+        private readonly PasswordService _passwordService;
+
+        public PasswordController(PasswordService passwordService)
+        {
+            _passwordService = passwordService;
+        }
 
         [HttpPost]
         public ActionResult<Password> Post([FromBody] Password passwordFromUser)
         {
-            Password password1 = password.CheckPassword(passwordFromUser.ThePassword);
+            Password password1 = _passwordService.CheckPassword(passwordFromUser.ThePassword);
             return Ok(password1);
 
         }

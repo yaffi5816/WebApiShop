@@ -13,31 +13,42 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class Users : ControllerBase
     {
-        UserService service=new UserService();
+        private readonly UserService _userService;
+        private readonly PasswordService _passwordService;
+
+        public Users(UserService userService, PasswordService passwordService)
+        {
+            _userService = userService;
+            _passwordService = passwordService;
+        }
 
 
         // GET api/<Users>/5
         [HttpGet("{Id}")]
         public ActionResult<User> Get(int id)
         {
-            User user =service.GetUserById(id);
+            User user = _userService.GetUserById(id);
             if (user != null)
             {
                 return Ok(user);
             }
-            return NoContent();
+            return NotFound();
         }
 
         // POST api/<Users>
         [HttpPost]
         public ActionResult<User> Post([FromBody] User user)
         {
-            User user1 = service.AddUser(user);
+            Password passwordCheck = _passwordService.CheckPassword(user.Password);
+            if (passwordCheck.Level < 2)
+                return BadRequest($"Password too weak (score: {passwordCheck.Level}/4). Minimum required: 2");
+
+            User user1 = _userService.AddUser(user);
             if(user1 != null) 
             {
                 return CreatedAtAction(nameof(Get), new { Id = user1.Id }, user1);
             }
-            return BadRequest();
+            return BadRequest("Failed to register user");
         }
 
 
@@ -46,19 +57,24 @@ namespace WebApiShop.Controllers
         [HttpPost("Login")]
         public ActionResult<User> Login([FromBody] User user)
         {
-            User user1 = service.Login(user);
+            User user1 = _userService.Login(user);
             if (user1 != null)
             {
-                return CreatedAtAction(nameof(Get), new { Id = user1.Id }, user1);
+                return Ok(user1);
             }
-            return BadRequest();
+            return Unauthorized("Invalid username or password");
 
         }
 
         [HttpPut("{Id}")]
-        public void Put(int id, [FromBody] User user)
+        public ActionResult Put(int id, [FromBody] User user)
         {
-            service.UpdateUser(id, user);
+            Password passwordCheck = _passwordService.CheckPassword(user.Password);
+            if (passwordCheck.Level < 2)
+                return BadRequest($"Password too weak (score: {passwordCheck.Level}/4). Minimum required: 2");
+
+            _userService.UpdateUser(id, user);
+            return NoContent();
         }
     }
 }
