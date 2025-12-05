@@ -11,16 +11,21 @@ namespace WebApiShop.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class Users : ControllerBase
+    public class UsersController : ControllerBase
     {
-        UserService service=new UserService();
+        private readonly IUserService _service;
 
+        public UsersController(IUserService service)
+        {
+            _service = service;
+        }
+        
 
         // GET api/<Users>/5
         [HttpGet("{Id}")]
-        public ActionResult<User> Get(int id)
+        public async Task<ActionResult<User>> Get(int id)
         {
-            User user =service.GetUserById(id);
+            User user =await _service.GetUserById(id);
             if (user != null)
             {
                 return Ok(user);
@@ -30,12 +35,12 @@ namespace WebApiShop.Controllers
 
         // POST api/<Users>
         [HttpPost]
-        public ActionResult<User> Post([FromBody] User user)
+        public async Task<ActionResult<User>> Post([FromBody] User user)
         {
-            User user1 = service.AddUser(user);
+            User user1 = await _service.AddUser(user);
             if(user1 != null) 
             {
-                return CreatedAtAction(nameof(Get), new { Id = user1.Id }, user1);
+                return CreatedAtAction(nameof(Get), new { Id = user1.UserId }, user1);
             }
             return BadRequest();
         }
@@ -44,12 +49,12 @@ namespace WebApiShop.Controllers
 
         // POST api/<Users>
         [HttpPost("Login")]
-        public ActionResult<User> Login([FromBody] User user)
+        public async Task<ActionResult<User>> Login([FromBody] User user)
         {
-            User user1 = service.Login(user);
+            User user1 = await _service.Login(user);
             if (user1 != null)
             {
-                return CreatedAtAction(nameof(Get), new { Id = user1.Id }, user1);
+                return CreatedAtAction(nameof(Get), new { Id = user1.UserId }, user1);
             }
             return BadRequest();
 
@@ -58,7 +63,7 @@ namespace WebApiShop.Controllers
         [HttpPut("{Id}")]
         public void Put(int id, [FromBody] User user)
         {
-            service.UpdateUser(id, user);
+            _service.UpdateUser(id, user);
         }
     }
 }

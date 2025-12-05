@@ -3,30 +3,33 @@ using Repositories;
 using System.Text.Json;
 namespace Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
-        UserRepository repository=new UserRepository();
-        PasswordService password=new PasswordService();
+        private readonly IUserRepository _repository;// = new UserRepository();
+        PasswordService password = new PasswordService();
 
-        public User GetUserById(int id)
+        public UserService(IUserRepository repository)
         {
-            return repository.GetUserById(id);
+            _repository = repository;
         }
-        public User AddUser(User user)
+
+        public async Task<User> GetUserById(int id)
         {
-            if (password.CheckPassword(user.Password).Level < 2)
-                return null;
-            return repository.AddUser(user);
+            return await _repository.GetUserById(id);
         }
-        public User Login(User user)
+        public async Task<User> AddUser(User user)
         {
-            if (password.CheckPassword(user.Password).Level < 2)
+            if (password.CheckPassword(user.Password).Level < 3)
                 return null;
-            return repository.Login(user);
+            return await _repository.AddUser(user);
+        }
+        public async Task<User> Login(User user)
+        {
+            return await _repository.Login(user);
         }
         public void UpdateUser(int id, User user)
         {
-            repository.UpdateUser(id,user);
+            _repository.UpdateUser(id, user);
         }
 
 
