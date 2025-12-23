@@ -21,5 +21,7 @@ namespace Entities
         public string ImgUrl { get; set; }
 
         public virtual Category Category { get; set; }
+
+        public virtual ICollection<OrdersItem> OrdersItems { get; set; } = new List<OrdersItem>();
     }
 }

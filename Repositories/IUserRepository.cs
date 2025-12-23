@@ -8,5 +8,6 @@ namespace Repositories
         Task<User> GetUserById(int id);
         Task<User> Login(User user);
         void UpdateUser(int id, User user);
+        Task<IEnumerable<User>> GetAsync();
     }
 }

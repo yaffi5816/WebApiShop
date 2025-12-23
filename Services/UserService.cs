@@ -1,4 +1,6 @@
-﻿using Entities;
+﻿using AutoMapper;
+using DTOs;
+using Entities;
 using Repositories;
 using System.Text.Json;
 namespace Services
@@ -6,11 +8,13 @@ namespace Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _repository;// = new UserRepository();
+        private readonly IMapper _mapper;
         PasswordService password = new PasswordService();
 
-        public UserService(IUserRepository repository)
+        public UserService(IUserRepository repository,IMapper mapper)
         {
             _repository = repository;
+            _mapper=mapper;
         }
 
         public async Task<User> GetUserById(int id)
@@ -31,6 +35,15 @@ namespace Services
         {
             _repository.UpdateUser(id, user);
         }
+
+
+        public async Task<IEnumerable<UserDTO>> GetAsync()
+        {
+            IEnumerable<User> users = await _repository.GetAsync();
+            IEnumerable<UserDTO> usersDTO = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(users);
+            return usersDTO;
+        }
+
 
 
 

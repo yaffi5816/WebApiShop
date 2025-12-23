@@ -8,9 +8,6 @@ async function getResponse() {
         if (!response.ok) {
             throw new Error(`HTTP error! status:${response.status}`);
         }
-        if (!response.ok) {
-            throw new Error;
-        }
         const data = await response.json();
     }
     catch (e) {

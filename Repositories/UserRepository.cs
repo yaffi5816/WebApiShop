@@ -39,6 +39,12 @@ namespace Repositories
             await _myShop_216128025Context.SaveChangesAsync();
 
         }
+
+
+        public async Task<IEnumerable<User>> GetAsync()
+        {
+            return await _myShop_216128025Context.Users.ToListAsync(); ;
+        }
     }
 
 }

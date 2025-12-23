@@ -3,6 +3,7 @@ using Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using DTO;
 //using WebApiShop.Properties;
 
 namespace WebApiShop.Controllers
@@ -19,7 +20,20 @@ namespace WebApiShop.Controllers
         {
             _service = service;
         }
-        
+
+       
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> Get()
+        {
+            IEnumerable<UserDTO> usersDTO = await _service.GetAsync();
+            if (usersDTO != null)
+            {
+                return Ok(usersDTO);
+            }
+            return NoContent();
+
+        }
+
 
         // GET api/<Users>/5
         [HttpGet("{Id}")]

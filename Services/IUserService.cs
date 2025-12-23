@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using DTOs;
+using Entities;
 
 namespace Services
 {
@@ -8,5 +9,6 @@ namespace Services
         Task<User> GetUserById(int id);
         Task<User> Login(User user);
         void UpdateUser(int id, User user);
+        Task<IEnumerable<UserDTO>> GetAsync();
     }
 }

@@ -3,8 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Entities
-{
+namespace Entities {
 
     public partial class Category
     {
