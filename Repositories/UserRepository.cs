@@ -8,7 +8,7 @@ namespace Repositories
     {
         string filePath = "..\\WebApiShop\\FileUsers.txt";
 
-        MyShop_216128025Context _myShop_216128025Context;
+        private readonly MyShop_216128025Context _myShop_216128025Context;
 
         public UserRepository(MyShop_216128025Context myShop_216128025Context)
         {
@@ -33,7 +33,7 @@ namespace Repositories
             return user;
 
         }
-        public async void UpdateUser(int id, User user)
+        public async Task UpdateUser(int id, User user)
         {
             _myShop_216128025Context.Users.Update(user);
             await _myShop_216128025Context.SaveChangesAsync();

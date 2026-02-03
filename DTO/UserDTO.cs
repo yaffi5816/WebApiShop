@@ -1,8 +1,11 @@
-﻿namespace DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DTOs
 {
     public record UserDTO
     (
-        int id,
+        short UserId,
+        [EmailAddress]
         string UserName
     );
 }

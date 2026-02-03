@@ -9,7 +9,7 @@ namespace Services
     {
         private readonly IUserRepository _repository;// = new UserRepository();
         private readonly IMapper _mapper;
-        PasswordService password = new PasswordService();
+        private readonly PasswordService _password = new PasswordService();
 
         public UserService(IUserRepository repository,IMapper mapper)
         {
@@ -23,7 +23,7 @@ namespace Services
         }
         public async Task<User> AddUser(User user)
         {
-            if (password.CheckPassword(user.Password).Level < 3)
+            if (_password.CheckPassword(user.Password).Level < 3)
                 return null;
             return await _repository.AddUser(user);
         }
@@ -31,9 +31,9 @@ namespace Services
         {
             return await _repository.Login(user);
         }
-        public void UpdateUser(int id, User user)
+        public async Task UpdateUser(int id, User user)
         {
-            _repository.UpdateUser(id, user);
+            await _repository.UpdateUser(id, user);
         }
 
 

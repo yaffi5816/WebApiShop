@@ -7,7 +7,7 @@ namespace Repositories
     public class ProductRepository : IProductRepository
     {
 
-        MyShop_216128025Context _myShop_216128025Context;
+        private readonly MyShop_216128025Context _myShop_216128025Context;
 
         public ProductRepository(MyShop_216128025Context myShop_216128025Context)
         {

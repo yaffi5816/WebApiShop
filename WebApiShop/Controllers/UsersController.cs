@@ -67,6 +67,10 @@ namespace WebApiShop.Controllers
         {
             User user1 = await _service.Login(user);
             if (user1 != null)
+            {
+                return Ok(user1);
+            }
+            return Unauthorized();
         }
 
         [HttpPut("{Id}")]
