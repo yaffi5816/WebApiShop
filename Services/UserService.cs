@@ -1,29 +1,49 @@
-﻿using Entities;
+﻿using AutoMapper;
+using DTOs;
+using Entities;
 using Repositories;
 using System.Text.Json;
 namespace Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
-        UserRepository repository=new UserRepository();
-        PasswordService password=new PasswordService();
+        private readonly IUserRepository _repository;// = new UserRepository();
+        private readonly IMapper _mapper;
+        PasswordService password = new PasswordService();
 
-        public User GetUserById(int id)
+        public UserService(IUserRepository repository,IMapper mapper)
         {
-            return repository.GetUserById(id);
+            _repository = repository;
+            _mapper=mapper;
         }
-        public User AddUser(User user)
+
+        public async Task<User> GetUserById(int id)
         {
-            return repository.AddUser(user);
+            return await _repository.GetUserById(id);
         }
-        public User Login(User user)
+        public async Task<User> AddUser(User user)
         {
-            return repository.Login(user);
+            if (password.CheckPassword(user.Password).Level < 3)
+                return null;
+            return await _repository.AddUser(user);
+        }
+        public async Task<User> Login(User user)
+        {
+            return await _repository.Login(user);
         }
         public void UpdateUser(int id, User user)
         {
-            repository.UpdateUser(id,user);
+            _repository.UpdateUser(id, user);
         }
+
+
+        public async Task<IEnumerable<UserDTO>> GetAsync()
+        {
+            IEnumerable<User> users = await _repository.GetAsync();
+            IEnumerable<UserDTO> usersDTO = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(users);
+            return usersDTO;
+        }
+
 
 
 

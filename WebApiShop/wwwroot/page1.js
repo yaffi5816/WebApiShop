@@ -8,9 +8,6 @@ async function getResponse() {
         if (!response.ok) {
             throw new Error(`HTTP error! status:${response.status}`);
         }
-        if (!response.ok) {
-            throw new Error;
-        }
         const data = await response.json();
     }
     catch (e) {
@@ -59,13 +56,12 @@ async function postResponse() {
             },
             body: JSON.stringify(n_user)
         });
+        if (response.status == 400) {
+            alert("הכנס סיסמה חזקה");
+            return;
+        }
         if (!response.ok) {
             throw new Error;
-        }
-        if (response.status == 204) {
-            alert("משתמש קיים");
-            return;
-        
         }
         alert("המשתמש נרשם בהצלחה");
         const dataPost = await response.json();
@@ -136,9 +132,9 @@ async function checkPassword() {
             },
             body: JSON.stringify(password)
         });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status:${response.status}`);
-        }
+        //if (!response.ok) {
+        //    throw new Error(`HTTP error! status:${response.status}`);
+        //}
         const data = await response.json();
         prog.value = data.level * 25;
         if (response.ok) {
