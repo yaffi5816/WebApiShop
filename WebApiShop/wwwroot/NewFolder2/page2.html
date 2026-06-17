@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script defer src="page2.js"></script>
+    <style>
+        *{
+            background-color:lightgray;
+            padding:0;
+            margin:0;
+            box-sizing:border-box;
+        }
+        .up {
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            width: 30vw;
+            height: 40vh;
+            justify-content: center;
+            align-items: center;
+            gap: 2vw;
+        }
+        .hello {
+            display: flex;
+            flex-direction: column;
+            font-size: 30px;
+        }
+        body{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+        }
+        .newUser {
+            display: flex;
+            flex-direction: column;
+
+        }
+        .down{
+            background-color: white;
+            width: 30vw;
+            display:none;
+        }
+    </style>
+</head>
+<body>
+    <div class="up">
+        <div class="hello">
+
+        </div>
+
+        <a onclick="openUp()">לעדכון פרטים</a>
+    </div>
+    <div class="down">
+        <div class="newUser">
+            <h3>משתמש חדש</h3>
+            <lable for="userName">כתובת מייל</lable>
+            <input type="email" id="userName" name="userName" required />
+            <lable for="password">סיסמא</lable>
+            <input type="password" id="password" name="password" required />
+            <lable for="firstName">שם פרטי</lable>
+            <input type="text" id="firstName" name="firstName" required />
+            <lable for="lastName">שם משפחה</lable>
+            <input type="text" id="lastName" name="lastName" required />
+            <button onclick="putResponse()">עדכן</button>
+        </div>
+    </div>
+
+
+
+</body>
+</html>
