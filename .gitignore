@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 
 .vs/
+
+repositories/users.txt
+.env
