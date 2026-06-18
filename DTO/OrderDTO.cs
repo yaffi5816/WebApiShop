@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DTO
 {
     public record OrderDTO(
-     int Id,
+     int OrderId,
 
      int UserId,
 

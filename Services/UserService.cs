@@ -47,7 +47,7 @@ namespace Services
         }
         public async Task<AuthResultDTO> Login(LoginUserDTO loginUser)
         {
-            var userEntity = await _userRepository.GetUserByEmail(loginUser.Email);
+            var userEntity = await _userRepository.GetUserByEmail(loginUser.UserName);
 
             if (userEntity == null || !_passwordService.VerifyPassword(loginUser.Password, userEntity.Password))
                 return null;

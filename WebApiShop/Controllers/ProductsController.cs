@@ -44,7 +44,7 @@ namespace WebApiShop.Controllers
             var returnedProduct = await _productService.AddProduct(newProduct);
             if (returnedProduct == null) return BadRequest();
 
-            return CreatedAtAction(nameof(Get), new { id = returnedProduct.Id }, returnedProduct);
+            return CreatedAtAction(nameof(Get), new { id = returnedProduct.ProductId }, returnedProduct);
         }
 
 

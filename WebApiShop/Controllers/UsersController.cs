@@ -44,7 +44,7 @@ namespace WebApiShop.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDTO>> Post([FromBody] PostUserDTO newUser)
         {
-            if (!await _userService.UserWithSameEmail(newUser.Email))
+            if (!await _userService.UserWithSameEmail(newUser.UserName))
                 return BadRequest("The email already exists. Please try again.");
 
             if (!_userService.IsPasswordStrong(newUser.Password))
@@ -63,7 +63,7 @@ namespace WebApiShop.Controllers
                 Expires = DateTime.UtcNow.AddDays(7)
             });
 
-            return CreatedAtAction(nameof(Get), new { id = result.User.Id }, result.User);
+            return CreatedAtAction(nameof(Get), new { id = result.User.UserId }, result.User);
         }
 
 
@@ -84,7 +84,7 @@ namespace WebApiShop.Controllers
             });
 
             _logger.LogInformation(
-                $"login attempted id:{result.User.Id} email:{result.User.Email} " +
+                $"login attempted id:{result.User.UserId} email:{result.User.UserName} " +
                 $"first name:{result.User.FirstName} last name:{result.User.LastName}"
             );
 
@@ -95,7 +95,7 @@ namespace WebApiShop.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] PostUserDTO updateUser)
         {
-            if (!await _userService.UserWithSameEmail(updateUser.Email, updateUser.Id))
+            if (!await _userService.UserWithSameEmail(updateUser.UserName, updateUser.UserId))
                 return BadRequest("The email already exists. Please try again.");
             if (!_userService.IsPasswordStrong(updateUser.Password))
                 return BadRequest("The password is too weak. Please try again.");

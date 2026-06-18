@@ -18,7 +18,7 @@ COPY . /source
 
 WORKDIR /source/WebApiShop
 
-# This is the architecture you’re building for, which is passed in by the builder.
+# This is the architecture youâ€™re building for, which is passed in by the builder.
 # Placing it here allows the previous steps to be cached across architectures.
 ARG TARGETARCH
 

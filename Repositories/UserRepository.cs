@@ -37,7 +37,7 @@ namespace Repositories
 
         public async Task<User> GetUserByEmail(string email)
         {
-            return await _apiDbContext.Users.Include(user => user.Orders).FirstOrDefaultAsync(user => user.Email == email);
+            return await _apiDbContext.Users.Include(user => user.Orders).FirstOrDefaultAsync(user => user.UserName == email);
         }
 
         public async Task<bool> UserWithSameEmail(string email, int id)
@@ -45,11 +45,11 @@ namespace Repositories
             User userWithSameEmail;
             if (id < 0)
             {
-                userWithSameEmail = await _apiDbContext.Users.FirstOrDefaultAsync(user => user.Email == email);
+                userWithSameEmail = await _apiDbContext.Users.FirstOrDefaultAsync(user => user.UserName == email);
             }
             else
             {
-                userWithSameEmail = await _apiDbContext.Users.FirstOrDefaultAsync(user => user.Email == email && user.Id != id);
+                userWithSameEmail = await _apiDbContext.Users.FirstOrDefaultAsync(user => user.UserName == email && user.UserId != id);
             }
             if (userWithSameEmail == null)
                 return true;

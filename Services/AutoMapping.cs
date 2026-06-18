@@ -1,43 +1,22 @@
 ﻿using AutoMapper;
 using DTO;
 using Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Services
+namespace WebApiShop
 {
-    internal class AutoMapping:Profile
+    public class AutoMapper : Profile
     {
-        public AutoMapping()
+        public AutoMapper()
         {
-            CreateMap<User, UserReadOnlyDTO>();
-            CreateMap<UserRegisterDTO, User>();
-            CreateMap<UserLoginDTO, User>();
-            CreateMap<UserLoginDTO, UserReadOnlyDTO>();
-            CreateMap<UserLoginDTO, UserRegisterDTO>();
-            CreateMap<UserUpdateDTO, User>();
-            CreateMap<Category, CategoryDTO>();
-            CreateMap<CategoryDTO, Category>();
-            //CreateMap<Product, ProductDTO>();
+            CreateMap<Order, OrderDTO>().ReverseMap();
+            CreateMap<OrdersItem, OrderItemDTO>().ReverseMap();
+            CreateMap<User, PostUserDTO>().ReverseMap();
+            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<User, LoginUserDTO>().ReverseMap();
+            CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<Product, ProductDTO>().ReverseMap();
+            CreateMap<Product, PostProductDTO>().ReverseMap();
 
-            CreateMap<Product, ProductDTO>()
-            .ForMember(dest => dest.CategoryName,
-             opt => opt.MapFrom(src => src.Category != null ? src.Category.CategoryName : null));
-            CreateMap<ProductDTO, Product>()
-            .ForMember(dest => dest.Category, opt => opt.Ignore())
-            .ForMember(dest => dest.OrdersItems, opt => opt.Ignore());
-            //CreateMap<ProductDTO, Product>();
-            CreateMap<Order, OrderDTO>()
-            .ForMember(dest => dest.OrderItems,
-             opt => opt.MapFrom(src => src.OrdersItems));
-            CreateMap<OrderDTO, Order>();
-            CreateMap<OrdersItem, OrderItemDTO>()
-            .ForMember(dest => dest.Product,
-             opt => opt.MapFrom(src => src.Product));
-            CreateMap<OrderItemDTO, OrdersItem>();
         }
     }
 }
