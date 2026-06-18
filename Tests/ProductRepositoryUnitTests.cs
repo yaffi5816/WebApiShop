@@ -15,9 +15,9 @@ namespace Tests
             // Arrange
             var products = new List<Product>
             {
-                new Product { Id = 1, Name = "Laptop", Description = "High end gaming", Price = 2000, CategoryId = 1 },
-                new Product { Id = 2, Name = "Mouse", Description = "Office mouse", Price = 50, CategoryId = 1 },
-                new Product { Id = 3, Name = "Monitor", Description = "4K Display", Price = 500, CategoryId = 2 }
+                new Product { ProductId = 1, ProductName = "Laptop", ProductDescreption = "High end gaming", Price = 2000, CategoryId = 1 },
+                new Product { ProductId = 2, ProductName = "Mouse", ProductDescreption = "Office mouse", Price = 50, CategoryId = 1 },
+                new Product { ProductId = 3, ProductName = "Monitor", ProductDescreption = "4K Display", Price = 500, CategoryId = 2 }
             };
 
             var mockContext = new Mock<ApiDBContext>();
@@ -30,7 +30,7 @@ namespace Tests
 
             // Assert
             Assert.Single(items);
-            Assert.Equal("Laptop", items.First().Name);
+            Assert.Equal("Laptop", items.First().ProductName);
             Assert.Equal(1, totalCount);
         }
 
@@ -43,11 +43,11 @@ namespace Tests
             {
                 products.Add(new Product
                 {
-                    Id = i,
-                    Name = $"Product {i}",
+                    ProductId = i,
+                    ProductName = $"Product {i}",
                     Price = i * 10,
                     CategoryId = 1,
-                    Description = "Test"
+                    ProductDescreption = "Test"
                 });
             }
 
@@ -96,7 +96,7 @@ namespace Tests
             // Arrange
             var products = new List<Product>
             {
-                new Product { Id = 1, Price = 100, CategoryId = 1, Description = "Expensive Item" }
+                new Product { ProductId = 1, Price = 100, CategoryId = 1, ProductDescreption = "Expensive Item" }
             };
             var mockContext = new Mock<ApiDBContext>();
             mockContext.Setup(x => x.Products).ReturnsDbSet(products);
@@ -115,7 +115,7 @@ namespace Tests
         {
             // Arrange
             var productId = 10;
-            var expectedProduct = new Product { Id = productId, Name = "Gaming Chair", Price = 1200 };
+            var expectedProduct = new Product { ProductId = productId, ProductName = "Gaming Chair", Price = 1200 };
             var products = new List<Product> { expectedProduct };
 
             var mockContext = new Mock<ApiDBContext>();
@@ -132,7 +132,7 @@ namespace Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(productId, result.Id);
+            Assert.Equal(productId, result.ProductId);
         }
         [Fact]
         public async Task GetProductById_ProductDoesNotExist_ReturnsNull()
@@ -140,7 +140,7 @@ namespace Tests
             // Arrange
             var products = new List<Product>
             {
-                new Product { Id = 1, Name = "Laptop" }
+                new Product { ProductId = 1, ProductName = "Laptop" }
             };
 
             var mockContext = new Mock<ApiDBContext>();
@@ -167,7 +167,7 @@ namespace Tests
             mockContext.Setup(x => x.Products).Returns(mockDbSet.Object);
 
             var repository = new ProductRepository(mockContext.Object);
-            var newProduct = new Product { Id = 4, Name = "Keyboard", Price = 100 };
+            var newProduct = new Product { ProductId = 4, ProductName = "Keyboard", Price = 100 };
 
             // Act
             var result = await repository.AddProduct(newProduct);
@@ -175,7 +175,7 @@ namespace Tests
             // Assert
             mockDbSet.Verify(m => m.AddAsync(It.IsAny<Product>(), default), Times.Once);
             mockContext.Verify(m => m.SaveChangesAsync(default), Times.Once);
-            Assert.Equal(newProduct.Name, result.Name);
+            Assert.Equal(newProduct.ProductName, result.ProductName);
         }
 
     }

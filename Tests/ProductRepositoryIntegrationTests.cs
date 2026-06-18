@@ -32,38 +32,38 @@ namespace Tests
         public async Task GetProducts_WithComplexFilters_ReturnsExpectedResult()
         {
             // Arrange
-            var category = new Category { Name = "Tech" };
+            var category = new Category { CategoryName = "Tech" };
             await _dbContext.Categories.AddAsync(category);
 
-            var p1 = new Product { Name = "A", Description = "Good", Price = 100, Category = category };
-            var p2 = new Product { Name = "B", Description = "Bad", Price = 200, Category = category };
-            var p3 = new Product { Name = "C", Description = "Good", Price = 300, Category = category };
+            var p1 = new Product { ProductName = "A", ProductDescreption = "Good", Price = 100, Category = category };
+            var p2 = new Product { ProductName = "B", ProductDescreption = "Bad", Price = 200, Category = category };
+            var p3 = new Product { ProductName = "C", ProductDescreption = "Good", Price = 300, Category = category };
 
             await _dbContext.Products.AddRangeAsync(p1, p2, p3);
             await _dbContext.SaveChangesAsync();
 
             // Act
-            var (items, totalCount) = await _productRepository.GetProducts(1, 10, new int?[] { category.Id }, "Good", 250, 0);
+            var (items, totalCount) = await _productRepository.GetProducts(1, 10, new int?[] { category.CategoryId }, "Good", 250, 0);
 
             // Assert
             Assert.Single(items);
-            Assert.Equal("A", items.First().Name);
+            Assert.Equal("A", items.First().ProductName);
             Assert.Equal(1, totalCount);
         }
         [Fact]
         public async Task GetProducts_Pagination_ReturnsCorrectSliceOfData()
         {
             // Arrange
-            var category = new Category { Name = "Hardware" };
+            var category = new Category { CategoryName = "Hardware" };
             await _dbContext.Categories.AddAsync(category);
 
             var products = new List<Product>
             {
-                new Product { Name = "Item 1", Price = 10, Category = category, Description = "D" },
-                new Product { Name = "Item 2", Price = 20, Category = category, Description = "D" },
-                new Product { Name = "Item 3", Price = 30, Category = category, Description = "D" },
-                new Product { Name = "Item 4", Price = 40, Category = category, Description = "D" },
-                new Product { Name = "Item 5", Price = 50, Category = category, Description = "D" }
+                new Product { ProductName = "Item 1", Price = 10, Category = category, ProductDescreption = "D" },
+                new Product { ProductName = "Item 2", Price = 20, Category = category, ProductDescreption = "D" },
+                new Product { ProductName = "Item 3", Price = 30, Category = category, ProductDescreption = "D" },
+                new Product { ProductName = "Item 4", Price = 40, Category = category, ProductDescreption = "D" },
+                new Product { ProductName = "Item 5", Price = 50, Category = category, ProductDescreption = "D" }
             };
             await _dbContext.Products.AddRangeAsync(products);
             await _dbContext.SaveChangesAsync();
@@ -72,7 +72,7 @@ namespace Tests
             var (items, totalCount) = await _productRepository.GetProducts(
                 position: 2,
                 skip: 2,
-                categoryIds: new int?[] { category.Id },
+                categoryIds: new int?[] { category.CategoryId },
                 description: null,
                 maxPrice: null,
                 minPrice: null
@@ -88,14 +88,14 @@ namespace Tests
         public async Task GetProducts_WhenFiltersMatchNoData_ReturnsEmptyList()
         {
             // Arrange
-            var category = new Category { Name = "Tech" };
+            var category = new Category { CategoryName = "Tech" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.Products.AddAsync(new Product
             {
-                Name = "Cheap Phone",
+                ProductName = "Cheap Phone",
                 Price = 100,
                 Category = category,
-                Description = "Old"
+                ProductDescreption = "Old"
             });
             await _dbContext.SaveChangesAsync();
 
@@ -103,7 +103,7 @@ namespace Tests
             var (items, totalCount) = await _productRepository.GetProducts(
                 position: 1,
                 skip: 10,
-                categoryIds: new int?[] { category.Id },
+                categoryIds: new int?[] { category.CategoryId },
                 description: null,
                 maxPrice: null,
                 minPrice: 1000
@@ -118,27 +118,27 @@ namespace Tests
         public async Task GetProductById_ReturnsProduct_WhenIdExists()
         {
             // Arrange
-            var category = new Category { Name = "General" };
+            var category = new Category { CategoryName = "General" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
             var product = new Product
             {
-                Name = "Test Product",
+                ProductName = "Test Product",
                 Price = 100,
-                Description = "Test",
-                CategoryId = category.Id
+                ProductDescreption = "Test",
+                CategoryId = category.CategoryId
             };
             await _dbContext.Products.AddAsync(product);
             await _dbContext.SaveChangesAsync();
 
             // Act
-            var result = await _productRepository.GetProductById(product.Id);
+            var result = await _productRepository.GetProductById(product.ProductId);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(product.Id, result.Id);
-            Assert.Equal("Test Product", result.Name);
+            Assert.Equal(product.ProductId, result.ProductId);
+            Assert.Equal("Test Product", result.ProductName);
             Assert.Equal(100, result.Price);
         }
 
@@ -156,16 +156,16 @@ namespace Tests
         public async Task AddProduct_SavesProductToDatabase()
         {
             // Arrange
-            var category = new Category { Name = "Hardware" };
+            var category = new Category { CategoryName = "Hardware" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
             var newProduct = new Product
             {
-                Name = "New Keyboard",
+                ProductName = "New Keyboard",
                 Price = 50,
-                Description = "Mechanical",
-                CategoryId = category.Id
+                ProductDescreption = "Mechanical",
+                CategoryId = category.CategoryId
             };
 
 
@@ -173,8 +173,8 @@ namespace Tests
             var result = await _productRepository.AddProduct(newProduct);
 
             // Assert
-            Assert.NotEqual(0, result.Id);
-            var productInDb = await _dbContext.Products.FindAsync(result.Id);
+            Assert.NotEqual(0, result.ProductId);
+            var productInDb = await _dbContext.Products.FindAsync(result.ProductId);
             Assert.NotNull(productInDb);
         }
 

@@ -23,16 +23,16 @@ namespace Tests
             {
                 new User
                 {
-                    Id = 1,
+                    UserId = 1,
                     FirstName = "Alice",
-                    Email = "alice@test.com",
-                    Orders = new List<Order> { new Order { Id = 101, OrderSum = 50.0 } }
+                    UserName = "alice@test.com",
+                    Orders = new List<Order> { new Order { UserId = 101, OrdersSum = 50.0 } }
                 },
                 new User
                 {
-                    Id = 2,
+                    UserId = 2,
                     FirstName = "Bob",
-                    Email = "bob@test.com",
+                    UserName = "bob@test.com",
                     Orders = new List<Order>()
                 }
             };
@@ -79,8 +79,8 @@ namespace Tests
             var userId = 1;
             var users = new List<User>
             {
-                new User { Id = userId, FirstName = "Israel" },
-                new User { Id = 2, FirstName = "Yossi" }
+                new User { UserId = userId, FirstName = "Israel" },
+                new User { UserId = 2, FirstName = "Yossi" }
             };
 
             var mockContext = new Mock<ApiDBContext>();
@@ -88,7 +88,7 @@ namespace Tests
             mockContext.Setup(x => x.Users).ReturnsDbSet(users);
 
             mockContext.Setup(x => x.Users.FindAsync(userId))
-                       .ReturnsAsync(users.First(u => u.Id == userId));
+                       .ReturnsAsync(users.First(u => u.UserId == userId));
 
             var repository = new UserRepository(mockContext.Object);
 
@@ -97,7 +97,7 @@ namespace Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(userId, result.Id);
+            Assert.Equal(userId, result.UserId);
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace Tests
             // Arrange
             var users = new List<User>
             {
-                new User { Id = 1, FirstName = "Israel" }
+                new User { UserId = 1, FirstName = "Israel" }
             };
 
             var mockContext = new Mock<ApiDBContext>();
@@ -131,8 +131,8 @@ namespace Tests
             var hashedPassword = _passwordService.HashPassword("password123");
             var users = new List<User>
             {
-                new User { Id = 1, Email = email, Password = hashedPassword, FirstName = "John" },
-                new User { Id = 2, Email = "other@test.com", Password = _passwordService.HashPassword("other") }
+                new User { UserId = 1, UserName = email, Password = hashedPassword, FirstName = "John" },
+                new User { UserId = 2, UserName = "other@test.com", Password = _passwordService.HashPassword("other") }
             };
 
             var mockContext = new Mock<ApiDBContext>();
@@ -145,7 +145,7 @@ namespace Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(email, result.Email);
+            Assert.Equal(email, result.UserName);
             Assert.True(_passwordService.VerifyPassword("password123", result.Password));
         }
 
@@ -155,7 +155,7 @@ namespace Tests
             // Arrange
             var users = new List<User>
             {
-                new User { Id = 1, Email = "test@test.com", Password = _passwordService.HashPassword("correct") }
+                new User { UserId = 1, UserName = "test@test.com", Password = _passwordService.HashPassword("correct") }
             };
 
             var mockContext = new Mock<ApiDBContext>();
@@ -178,7 +178,7 @@ namespace Tests
             mockContext.Setup(x => x.Users).ReturnsDbSet(new List<User>());
 
             var repository = new UserRepository(mockContext.Object);
-            var newUser = new User { Email = "new@user.com", Password = "789", FirstName = "Jane" };
+            var newUser = new User { UserName = "new@user.com", Password = "789", FirstName = "Jane" };
 
             // Act
             var result = await repository.AddUser(newUser);
@@ -195,7 +195,7 @@ namespace Tests
             // Arrange
             var users = new List<User>
             {
-                new User { Id = 1, Email = "existing@test.com" }
+                new User { UserId = 1, UserName = "existing@test.com" }
             };
 
             var mockContext = new Mock<ApiDBContext>();
@@ -217,8 +217,8 @@ namespace Tests
             var email = "duplicate@test.com";
             var users = new List<User>
             {
-                new User { Id = 1, Email = email },
-                new User { Id = 2, Email = "other@test.com" }
+                new User { UserId = 1, UserName = email },
+                new User { UserId = 2, UserName = "other@test.com" }
             };
 
             var mockContext = new Mock<ApiDBContext>();
@@ -244,9 +244,9 @@ namespace Tests
 
             var updatedUser = new User
             {
-                Id = 1,
+                UserId = 1,
                 FirstName = "NewName",
-                Email = "new@test.com",
+                UserName = "new@test.com",
                 Password = "123"
             };
 
@@ -256,7 +256,7 @@ namespace Tests
             // Assert
             mockContext.Verify(x => x.Users.Update(It.Is<User>(u =>
                 u.FirstName == "NewName" &&
-                u.Email == "new@test.com")), Times.Once);
+                u.UserName == "new@test.com")), Times.Once);
 
             mockContext.Verify(x => x.SaveChangesAsync(default), Times.Once);
         }

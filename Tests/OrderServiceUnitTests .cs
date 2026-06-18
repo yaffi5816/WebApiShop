@@ -75,7 +75,7 @@ namespace Tests
                 orderItems
             );
 
-            var product = new Product { Id = 1, Price = 50.0 };
+            var product = new Product { ProductId = 1, Price = 50.0 };
 
             var mockOrderRepo = new Mock<IOrderRepository>();
             var mockProductRepo = new Mock<IProductRepository>();

@@ -36,7 +36,7 @@ namespace Tests
         {
             // Arrange
             var hashedPassword = _passwordService.HashPassword("CorrectPassword");
-            var user = new User { FirstName = "RealUser", Email = "real@test.com", Password = hashedPassword };
+            var user = new User { FirstName = "RealUser", UserName = "real@test.com", Password = hashedPassword };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
@@ -62,11 +62,11 @@ namespace Tests
         public async Task GetUsers_ReturnsUsersWithOrders_FromDatabase()
         {
             // Arrange
-            var user = new User { FirstName = "Alice", Email = "alice@db.com", Password = "123" };
+            var user = new User { FirstName = "Alice", UserName = "alice@db.com", Password = "123" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
-            var order = new Order { UserId = user.Id, OrderDate = DateOnly.FromDateTime(DateTime.Now), OrderSum = 99.9 };
+            var order = new Order { UserId = user.UserId, OrderDate = DateOnly.FromDateTime(DateTime.Now), OrdersSum = 99.9 };
             await _dbContext.Orders.AddAsync(order);
             await _dbContext.SaveChangesAsync();
 
@@ -75,7 +75,7 @@ namespace Tests
 
             // Assert
             Assert.NotEmpty(result);
-            var fetchedUser = result.First(u => u.Email == "alice@db.com");
+            var fetchedUser = result.First(u => u.UserName == "alice@db.com");
             Assert.Single(fetchedUser.Orders);
         }
 
@@ -84,7 +84,7 @@ namespace Tests
         {
             // Arrange
             var hashedPassword = _passwordService.HashPassword("SecretPassword");
-            var user = new User { FirstName = "LoginTest", Email = "login@test.com", Password = hashedPassword };
+            var user = new User { FirstName = "LoginTest", UserName = "login@test.com", Password = hashedPassword };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
@@ -101,7 +101,7 @@ namespace Tests
         public async Task UpdateUser_ActuallyPersistsChangesInDatabase()
         {
             // Arrange
-            var user = new User { FirstName = "Before", Email = "before@test.com", Password = "123" };
+            var user = new User { FirstName = "Before", UserName = "before@test.com", Password = "123" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
@@ -109,35 +109,35 @@ namespace Tests
 
             var userToUpdate = new User
             {
-                Id = user.Id,
+                UserId = user.UserId,
                 FirstName = "After",
-                Email = "after@test.com",
+                UserName = "after@test.com",
                 Password = "123"
             };
 
             // Act
-            await _userRepository.UpdateUser(user.Id, userToUpdate);
+            await _userRepository.UpdateUser(user.UserId, userToUpdate);
 
             // Assert
             _dbContext.ChangeTracker.Clear();
-            var updatedUser = await _dbContext.Users.FindAsync(user.Id);
+            var updatedUser = await _dbContext.Users.FindAsync(user.UserId);
 
             Assert.NotNull(updatedUser);
             Assert.Equal("After", updatedUser.FirstName);
-            Assert.Equal("after@test.com", updatedUser.Email);
+            Assert.Equal("after@test.com", updatedUser.UserName);
         }
 
         [Fact]
         public async Task UserWithSameEmail_CorrectlyIdentifiesDuplicates()
         {
             // Arrange
-            var existingUser = new User { FirstName = "Existing", Email = "taken@test.com", Password = "123" };
+            var existingUser = new User { FirstName = "Existing", UserName = "taken@test.com", Password = "123" };
             await _dbContext.Users.AddAsync(existingUser);
             await _dbContext.SaveChangesAsync();
 
             // Act
             var isAvailableForNew = await _userRepository.UserWithSameEmail("taken@test.com", -1);
-            var isAvailableForSelf = await _userRepository.UserWithSameEmail("taken@test.com", existingUser.Id);
+            var isAvailableForSelf = await _userRepository.UserWithSameEmail("taken@test.com", existingUser.UserId);
 
             // Assert
             Assert.False(isAvailableForNew);
@@ -152,7 +152,7 @@ namespace Tests
             {
                 FirstName = "New",
                 LastName = "User",
-                Email = "new@test.com",
+                UserName = "new@test.com",
                 Password = "Password123"
             };
 
@@ -160,12 +160,12 @@ namespace Tests
             var result = await _userRepository.AddUser(newUser);
 
             // Assert
-            Assert.NotEqual(0, result.Id);
+            Assert.NotEqual(0, result.UserId);
             Assert.Equal("New", result.FirstName);
 
-            var userInDb = await _dbContext.Users.FindAsync(result.Id);
+            var userInDb = await _dbContext.Users.FindAsync(result.UserId);
             Assert.NotNull(userInDb);
-            Assert.Equal("new@test.com", userInDb.Email);
+            Assert.Equal("new@test.com", userInDb.UserName);
         }
 
         [Fact]
@@ -176,26 +176,26 @@ namespace Tests
             {
                 FirstName = "Test",
                 LastName = "User",
-                Email = "findme@test.com",
+                UserName = "findme@test.com",
                 Password = "123"
             };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
             // Act
-            var result = await _userRepository.GetUserById(user.Id);
+            var result = await _userRepository.GetUserById(user.UserId);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(user.Id, result.Id);
-            Assert.Equal("findme@test.com", result.Email);
+            Assert.Equal(user.UserId, result.UserId);
+            Assert.Equal("findme@test.com", result.UserName);
         }
 
         [Fact]
         public async Task GetUserById_ReturnsNull_WhenIdIsIncorrect()
         {
             // Arrange
-            var user = new User { FirstName = "Exist", Email = "exist@test.com", Password = "123" };
+            var user = new User { FirstName = "Exist", UserName = "exist@test.com", Password = "123" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
